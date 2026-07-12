@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom'
+export default function EmptyState({icon='♡',title,text,action}){return <div className="rounded-3xl border border-dashed border-primary/50 bg-cream px-6 py-16 text-center"><div className="text-5xl">{icon}</div><h2 className="mt-4 text-2xl font-bold">{title}</h2><p className="mx-auto mt-2 max-w-md text-ink/65">{text}</p>{action&&<Link to="/products" className="focus-ring mt-6 inline-block rounded-full bg-primary px-6 py-3 font-bold text-white hover:bg-[#d97985]">{action}</Link>}</div>}

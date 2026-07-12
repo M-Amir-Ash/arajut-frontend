@@ -1,0 +1,2 @@
+import ProductCard from './ProductCard'; import EmptyState from './EmptyState'
+export default function ProductGrid({products}){return products.length?<div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-6">{products.map(p=><ProductCard key={p.id} product={p}/>)}</div>:<EmptyState icon="🧶" title="Produk belum ditemukan" text="Coba kata kunci atau pilihan filter yang lain."/>}

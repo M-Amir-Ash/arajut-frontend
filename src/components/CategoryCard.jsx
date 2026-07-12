@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom'
+export default function CategoryCard({category}){return <Link to={`/products?category=${encodeURIComponent(category.name)}`} className={`focus-ring group flex min-h-32 flex-col items-center justify-center rounded-2xl ${category.color} p-5 text-center hover:-translate-y-1 hover:shadow-md`}><span className="text-4xl text-primary transition group-hover:scale-110">{category.icon}</span><span className="mt-3 text-sm font-bold">{category.name}</span></Link>}

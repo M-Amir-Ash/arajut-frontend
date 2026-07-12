@@ -1,0 +1,1 @@
+export default function FormField({label,error,...props}){return <label className="block text-sm font-semibold">{label}<input {...props} className={`focus-ring mt-2 h-12 w-full rounded-xl border bg-white px-4 outline-none ${error?'border-red-400':'border-ink/15 hover:border-primary'}`}/>{error&&<span className="mt-1 block text-xs text-red-600">{error}</span>}</label>}

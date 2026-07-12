@@ -1,0 +1,5 @@
+const DB='arajut-images'; const STORE='images'
+const open=()=>new Promise((resolve,reject)=>{const request=indexedDB.open(DB,1);request.onupgradeneeded=()=>request.result.createObjectStore(STORE);request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)})
+export async function saveImage(file){const db=await open();const id=crypto.randomUUID();await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(file,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});return id}
+export async function getImage(id){if(!id)return null;const db=await open();return new Promise((resolve,reject)=>{const request=db.transaction(STORE).objectStore(STORE).get(id);request.onsuccess=()=>resolve(request.result?URL.createObjectURL(request.result):null);request.onerror=()=>reject(request.error)})}
+export async function removeImage(id){if(!id)return;const db=await open();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
