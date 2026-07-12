@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Arajut product placeholder</title>
+  <desc id="desc">Soft pink yarn and crochet hook illustration</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff9f3"/><stop offset="1" stop-color="#f7d9dd"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#382f32" flood-opacity=".12"/></filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <circle cx="400" cy="356" r="172" fill="#e98f99" filter="url(#shadow)"/>
+  <g fill="none" stroke="#fff9f3" stroke-width="14" stroke-linecap="round" opacity=".9">
+    <path d="M283 291c74 12 176 85 217 177M268 348c89 0 190 55 238 133M280 413c78-19 164 4 220 55M314 478c55-35 120-44 177-21M337 221c53 71 78 161 68 261M409 194c27 87 30 189 0 287M476 224c-5 77-31 161-75 231"/>
+  </g>
+  <path d="M503 464c71 20 115 74 170 68" fill="none" stroke="#e98f99" stroke-width="16" stroke-linecap="round"/>
+  <path d="M216 249 618 527" fill="none" stroke="#382f32" stroke-width="13" stroke-linecap="round"/>
+  <path d="m618 527 42 12-24-37" fill="none" stroke="#382f32" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="625" text-anchor="middle" fill="#382f32" font-family="Georgia,serif" font-size="58" font-weight="700">Arajut</text>
+  <text x="400" y="675" text-anchor="middle" fill="#9b6870" font-family="Arial,sans-serif" font-size="22" letter-spacing="7">HANDMADE WITH LOVE</text>
+</svg>

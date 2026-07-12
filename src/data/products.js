@@ -12,7 +12,7 @@ const images = {
   gift: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=900&q=80',
   custom: 'https://images.unsplash.com/photo-1605001011156-cbf0b0f67a51?auto=format&fit=crop&w=900&q=80',
 }
-export const fallbackImage = 'https://placehold.co/800x800/F7D9DD/382F32?text=Arajut'
+export const fallbackImage = '/arajut-product-placeholder.svg'
 export const products = [
   { id:1, slug:'crochet-flower-brooch', name:'Crochet Flower Brooch', category:'Aksesori', description:'Bros bunga rajut mungil yang manis untuk mempercantik hijab, blouse, atau tas favoritmu.', price:35000, stock:18, image:images.brooch, readyStock:true, preorderDuration:'', featured:true },
   { id:2, slug:'handmade-pink-cardigan', name:'Handmade Pink Cardigan', category:'Modest Fashion', description:'Cardigan rajut lembut bernuansa pink, dibuat satu per satu dengan detail penuh kasih.', price:425000, stock:4, image:images.cardigan, readyStock:false, preorderDuration:'14–21 hari', featured:true },
