@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useSearchParams } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import ProductGrid from '../components/ProductGrid'
@@ -50,7 +49,7 @@ export default function Catalog() {
     .filter((product) => category === 'all' || product.category === category)
     .filter((product) => stock === 'all' || (stock === 'ready' ? product.readyStock : !product.readyStock))
     .sort((a, b) => sort === 'low' ? a.price - b.price : sort === 'high' ? b.price - a.price : a.id - b.id),
-  [search, category, stock, sort])
+  [products, search, category, stock, sort])
 
   const changeSearch = (value) => {
     setSearch(value)
