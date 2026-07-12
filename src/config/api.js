@@ -23,7 +23,7 @@ const messages = {
 export async function apiRequest(path, options = {}) {
   if (!API_BASE_URL) throw new ApiError('Alamat API belum dikonfigurasi.')
 
-  const token = localStorage.getItem('arajut-api-token')
+  const token = localStorage.getItem('arajut-api-token') || sessionStorage.getItem('arajut-api-token')
   const headers = new Headers(options.headers)
   headers.set('Accept', 'application/json')
   if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json')
@@ -42,6 +42,7 @@ export async function apiRequest(path, options = {}) {
   if (!response.ok) {
     if (response.status === 401) {
       localStorage.removeItem('arajut-api-token')
+      sessionStorage.removeItem('arajut-api-token')
       window.dispatchEvent(new CustomEvent('arajut:unauthenticated'))
     }
     throw new ApiError(payload?.message || messages[response.status] || 'Permintaan tidak dapat diproses.', response.status, payload?.errors || null)

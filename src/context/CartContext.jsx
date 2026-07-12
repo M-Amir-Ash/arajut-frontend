@@ -1,14 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-const CartContext = createContext(null)
-const readCart = () => { try { return JSON.parse(localStorage.getItem('arajut-cart')) || [] } catch { return [] } }
-export function CartProvider({ children }) {
-  const [items, setItems] = useState(readCart)
-  useEffect(() => localStorage.setItem('arajut-cart', JSON.stringify(items)), [items])
-  const addItem = (product, quantity = 1) => setItems(old => { const found = old.find(i => i.id === product.id); return found ? old.map(i => i.id === product.id ? {...i, quantity: Math.min(i.quantity + quantity, product.stock)} : i) : [...old, {...product, quantity: Math.min(quantity, product.stock)}] })
-  const updateQuantity = (id, quantity) => setItems(old => old.map(i => i.id === id ? {...i, quantity: Math.max(1, Math.min(quantity, i.stock))} : i))
-  const removeItem = id => setItems(old => old.filter(i => i.id !== id))
-  const value = useMemo(() => ({ items, addItem, updateQuantity, removeItem, count: items.reduce((n,i)=>n+i.quantity,0), total: items.reduce((n,i)=>n+i.price*i.quantity,0) }), [items])
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
-}
+/* eslint-disable react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
+import{createContext,useContext,useEffect,useMemo,useState}from'react';import{apiRequest}from'../config/api';import{useAuth}from'./AuthContext'
+const C=createContext(null),KEY='arajut-cart';const local=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}};const mapCart=d=>(d?.items||[]).map(i=>{const p=i.product;return{id:p.id,name:p.name,slug:p.slug,price:Number(p.price),stock:p.stock,image:p.images?.find(x=>x.is_primary)?.path||p.images?.[0]?.path,quantity:i.quantity}})
+export function CartProvider({children}){const{user}=useAuth();const[items,setItems]=useState(local);const load=async()=>{if(!user)return setItems(local());try{const r=await apiRequest('/cart');setItems(mapCart(r.data))}catch{/* keep current cart */}};useEffect(()=>{load()},[user]);useEffect(()=>{if(!user)localStorage.setItem(KEY,JSON.stringify(items))},[items,user]);const addItem=async(p,q=1)=>{if(user){await apiRequest('/cart/items',{method:'PUT',body:JSON.stringify({product_id:p.id,quantity:q})});await load()}else setItems(old=>{const x=old.find(i=>i.id===p.id);return x?old.map(i=>i.id===p.id?{...i,quantity:Math.min(i.quantity+q,p.stock)}:i):[...old,{...p,quantity:q}]})};const updateQuantity=async(id,q)=>{if(user){await apiRequest('/cart/items',{method:'PUT',body:JSON.stringify({product_id:id,quantity:q})});await load()}else setItems(old=>old.map(i=>i.id===id?{...i,quantity:Math.max(1,Math.min(q,i.stock))}:i))};const removeItem=async id=>{if(user){await apiRequest(`/cart/items/${id}`,{method:'DELETE'});await load()}else setItems(old=>old.filter(i=>i.id!==id))};const value=useMemo(()=>({items,addItem,updateQuantity,removeItem,count:items.reduce((n,i)=>n+i.quantity,0),total:items.reduce((n,i)=>n+i.price*i.quantity,0)}),[items]);return <C.Provider value={value}>{children}</C.Provider>}
 // eslint-disable-next-line react-refresh/only-export-components
-export const useCart = () => useContext(CartContext)
+export const useCart=()=>useContext(C)
