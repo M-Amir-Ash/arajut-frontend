@@ -38,10 +38,11 @@ export default function ProductForm() {
 
   const submit = async (event) => {
     event.preventDefault()
-    if (!form.name || !form.slug || !form.category || !form.fullDescription || Number(form.price) <= 0 || Number(form.stock) < 0 || (!form.readyStock && !form.preorderDuration)) return setError('Lengkapi semua kolom wajib dengan nilai yang valid.')
+    const effectiveDescription = form.fullDescription || form.description || ''
+    if (!form.name || !form.slug || !form.category || !effectiveDescription.trim() || Number(form.price) <= 0 || Number(form.stock) < 0 || (!form.readyStock && !form.preorderDuration)) return setError('Lengkapi semua kolom wajib dengan nilai yang valid.')
     setSaving(true); setError('')
     try {
-      await saveProduct({ ...form, price:Number(form.price), stock:Number(form.stock) })
+      await saveProduct({ ...form, fullDescription:effectiveDescription, price:Number(form.price), stock:Number(form.stock) })
       if (file) {
         const product = await apiRequest(`/products/${form.slug}`)
         const body = new FormData()
