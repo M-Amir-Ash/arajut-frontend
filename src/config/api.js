@@ -37,7 +37,8 @@ export async function apiRequest(path, options = {}) {
   }
 
   const contentType = response.headers.get('content-type') || ''
-  const payload = contentType.includes('application/json') ? await response.json() : null
+  const hasBody = response.status !== 204 && response.status !== 205
+  const payload = hasBody && contentType.includes('application/json') ? await response.json() : null
 
   if (!response.ok) {
     if (response.status === 401) {
