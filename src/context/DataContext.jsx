@@ -4,7 +4,7 @@ import {apiRequest} from '../config/api'
 import {defaultSettings} from '../services/storage'
 
 const C=createContext(null)
-const mapSettings=s=>s?{brandName:s.brand_name,tagline:s.tagline,heroBadge:s.hero_badge,heroHeading:s.hero_heading,heroHighlight:s.hero_highlight,heroDescription:s.hero_description,heroImage:s.hero_image_path||'',promoTitle:s.promotion_title,promoDescription:s.promotion_description,instagram:s.instagram_url,whatsapp:s.whatsapp_number,email:s.contact_email,footerText:s.footer_text}:defaultSettings
+const mapSettings=s=>s?{brandName:s.brand_name,tagline:s.tagline,logoImage:s.logo_path||'',heroBadge:s.hero_badge,heroHeading:s.hero_heading,heroHighlight:s.hero_highlight,heroDescription:s.hero_description,heroImage:s.hero_image_path||'',promoTitle:s.promotion_title,promoDescription:s.promotion_description,instagram:s.instagram_url,whatsapp:s.whatsapp_number,email:s.contact_email,footerText:s.footer_text}:defaultSettings
 
 export function DataProvider({children}){
   const[state,setState]=useState({products:[],categories:[],settings:defaultSettings,loading:true,error:''})
