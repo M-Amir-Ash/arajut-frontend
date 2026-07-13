@@ -11,7 +11,8 @@ export default function Home(){
   const navigate=useNavigate()
   const{products,categories,settings,loading,error,refresh}=useData()
   const featured=products.filter(product=>product.featured&&product.active!==false).slice(0,8)
-  const activeCategories=categories.filter(category=>category.active!==false).sort((a,b)=>a.sortOrder-b.sortOrder)
+  const productCategories=new Set(products.filter(product=>product.active!==false).map(product=>product.category))
+  const activeCategories=categories.filter(category=>category.active!==false&&productCategories.has(category.name)).sort((a,b)=>a.sortOrder-b.sortOrder)
   const heroImage=settings.heroImage||products.find(product=>product.image)?.image
   const customProduct=products.find(product=>product.slug==='custom-crochet-order')
   const submit=e=>{e.preventDefault();navigate(`/products?search=${encodeURIComponent(query)}`)}
