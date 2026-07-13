@@ -3,11 +3,12 @@ const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
 export const API_BASE_URL = configuredBaseUrl?.replace(/\/$/, '') || ''
 
 export class ApiError extends Error {
-  constructor(message, status = 0, errors = null) {
+  constructor(message, status = 0, errors = null, code = null) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.errors = errors
+    this.code = code
   }
 }
 
@@ -46,7 +47,7 @@ export async function apiRequest(path, options = {}) {
       sessionStorage.removeItem('arajut-api-token')
       window.dispatchEvent(new CustomEvent('arajut:unauthenticated'))
     }
-    throw new ApiError(payload?.message || messages[response.status] || 'Permintaan tidak dapat diproses.', response.status, payload?.errors || null)
+    throw new ApiError(payload?.message || messages[response.status] || 'Permintaan tidak dapat diproses.', response.status, payload?.errors || null, payload?.code || null)
   }
 
   return payload

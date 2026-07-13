@@ -57,7 +57,10 @@ export default function ProductForm(){
       }
       await refresh()
       navigate('/admin/products')
-    }catch(requestError){setError(requestError.message||'Produk belum dapat disimpan.')}finally{setSaving(false)}
+    }catch(requestError){
+      const uploadMessages={storage_not_configured:'Konfigurasi Supabase Storage di Railway belum lengkap.',storage_curl_error_6:'Railway tidak dapat menemukan host Supabase. Periksa SUPABASE_URL.',storage_curl_error_28:'Koneksi Railway ke Supabase kehabisan waktu.',storage_rejected_401:'Supabase menolak secret key. Perbarui SUPABASE_SECRET_KEY di Railway.',storage_rejected_403:'Secret key tidak memiliki izin upload ke bucket.',storage_rejected_404:'Bucket product-images tidak ditemukan.'}
+      setError(uploadMessages[requestError.code]||requestError.message||'Produk belum dapat disimpan.')
+    }finally{setSaving(false)}
   }
 
   const existingImages=[...new Set([form.image,...(form.images||[])].filter(Boolean))]
