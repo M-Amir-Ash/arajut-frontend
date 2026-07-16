@@ -7,22 +7,31 @@ const C=createContext(null)
 const mapSettings=s=>s?{brandName:s.brand_name,tagline:s.tagline,logoImage:s.logo_path||'',heroBadge:s.hero_badge,heroHeading:s.hero_heading,heroHighlight:s.hero_highlight,heroDescription:s.hero_description,heroImage:s.hero_image_path||'',promoTitle:s.promotion_title,promoDescription:s.promotion_description,instagram:s.instagram_url,whatsapp:s.whatsapp_number,email:s.contact_email,footerText:s.footer_text}:defaultSettings
 
 export function DataProvider({children}){
-  const[state,setState]=useState({products:[],categories:[],settings:defaultSettings,loading:true,error:''})
+  const[state,setState]=useState({products:[],categories:[],settings:defaultSettings,loading:true,productsLoading:true,categoriesLoading:true,settingsLoading:true,error:''})
 
   const load=async()=>{
-    setState(s=>({...s,loading:true,error:''}))
-    const[p,c,s]=await Promise.allSettled([
-      apiRequest('/products'),
-      apiRequest('/categories'),
-      apiRequest('/site-settings'),
-    ])
-    setState(current=>({
-      products:p.status==='fulfilled'?(p.value.data??[]):current.products,
-      categories:c.status==='fulfilled'?(c.value.data??[]):current.categories,
-      settings:s.status==='fulfilled'?mapSettings(s.value.data):current.settings,
-      loading:false,
-      error:[p,c,s].filter(result=>result.status==='rejected').map(result=>result.reason?.message).filter(Boolean).join(' '),
-    }))
+    setState(s=>({...s,loading:true,productsLoading:true,categoriesLoading:true,settingsLoading:true,error:''}))
+    try{
+      const response=await apiRequest('/storefront')
+      setState({products:response.data?.products??[],categories:response.data?.categories??[],settings:mapSettings(response.data?.settings),loading:false,productsLoading:false,categoriesLoading:false,settingsLoading:false,error:''})
+    }catch(error){
+      if(error.status===404){
+        const results=await Promise.allSettled([apiRequest('/products'),apiRequest('/categories'),apiRequest('/site-settings')])
+        const[p,c,s]=results
+        setState(current=>({
+          products:p.status==='fulfilled'?(p.value.data??[]):current.products,
+          categories:c.status==='fulfilled'?(c.value.data??[]):current.categories,
+          settings:s.status==='fulfilled'?mapSettings(s.value.data):current.settings,
+          loading:false,
+          productsLoading:false,
+          categoriesLoading:false,
+          settingsLoading:false,
+          error:results.filter(result=>result.status==='rejected').map(result=>result.reason?.message).filter(Boolean).join(' '),
+        }))
+      }else{
+        setState(current=>({...current,loading:false,productsLoading:false,categoriesLoading:false,settingsLoading:false,error:error.message||'Storefront belum dapat dimuat.'}))
+      }
+    }
   }
 
   useEffect(()=>{const timer=window.setTimeout(load,0);return()=>window.clearTimeout(timer)},[])

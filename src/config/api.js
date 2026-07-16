@@ -32,7 +32,12 @@ export async function apiRequest(path, options = {}) {
 
   let response
   try {
-    response = await fetch(`${API_BASE_URL}/${path.replace(/^\//, '')}`, { credentials: 'include', ...options, headers })
+    response = await fetch(`${API_BASE_URL}/${path.replace(/^\//, '')}`, {
+      credentials: 'include',
+      cache: options.method && options.method !== 'GET' ? 'default' : 'no-store',
+      ...options,
+      headers,
+    })
   } catch {
     throw new ApiError('Tidak dapat terhubung ke server Arajut. Periksa koneksi dan coba lagi.')
   }
