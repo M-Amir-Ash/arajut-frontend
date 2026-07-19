@@ -1,2 +1,40 @@
-import { Link } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { formatRupiah } from '../utils/format'; import CartItem from '../components/CartItem'; import EmptyState from '../components/EmptyState'
-export default function Cart(){const {items,updateQuantity,removeItem,total}=useCart();if(!items.length)return <div className="container-page py-14"><EmptyState icon="🛍️" title="Keranjangmu masih kosong" text="Yuk, temukan karya rajut yang siap menemani hari-harimu." action="Mulai belanja"/></div>;return <div className="container-page py-12"><h1 className="font-serif text-4xl font-bold">Keranjang Belanja</h1><p className="mt-2 text-ink/60">{items.length} jenis produk pilihanmu</p><div className="mt-8 grid items-start gap-8 lg:grid-cols-[1fr_360px]"><div className="rounded-2xl border border-blush bg-white px-5">{items.map(i=><CartItem key={i.id} item={i} onUpdate={updateQuantity} onRemove={removeItem}/>)}</div><aside className="rounded-2xl bg-cream p-6 lg:sticky lg:top-24"><h2 className="text-xl font-bold">Ringkasan Belanja</h2><div className="mt-5 flex justify-between text-sm"><span>Subtotal</span><span>{formatRupiah(total)}</span></div><div className="mt-3 flex justify-between text-sm"><span>Ongkir</span><span>Dihitung saat checkout</span></div><div className="my-5 border-t border-blush"></div><div className="flex justify-between text-lg font-extrabold"><span>Total</span><span className="text-primary">{formatRupiah(total)}</span></div><Link to="/checkout" className="focus-ring mt-6 block rounded-full bg-primary py-3.5 text-center font-bold text-white hover:bg-[#d97985]">Lanjut ke Checkout</Link><Link to="/products" className="focus-ring mt-3 block rounded-full py-3 text-center text-sm font-bold text-ink/60 hover:text-primary">Lanjut belanja</Link></aside></div></div>}
+import { Link } from 'react-router-dom'
+import CartItem from '../components/CartItem'
+import EmptyState from '../components/EmptyState'
+import { useCart } from '../context/CartContext'
+import { formatRupiah } from '../utils/format'
+
+export default function Cart() {
+  const {items, updateQuantity, removeItem, total} = useCart()
+
+  const remove = async id => {
+    try {
+      await removeItem(id)
+    } catch (error) {
+      window.alert(error.message || 'Produk belum dapat dihapus dari keranjang.')
+    }
+  }
+
+  if (!items.length) {
+    return <div className="container-page py-14"><EmptyState icon="🛒" title="Keranjangmu masih kosong" text="Yuk, temukan karya rajut yang siap menemani hari-harimu." action="Mulai belanja" /></div>
+  }
+
+  return <div className="container-page py-12">
+    <h1 className="font-serif text-4xl font-bold">Keranjang Belanja</h1>
+    <p className="mt-2 text-ink/60">{items.length} jenis produk pilihanmu</p>
+    <div className="mt-8 grid items-start gap-8 lg:grid-cols-[1fr_360px]">
+      <div className="rounded-2xl border border-blush bg-white px-5">
+        {items.map(item => <CartItem key={item.id} item={item} onUpdate={updateQuantity} onRemove={remove} />)}
+      </div>
+      <aside className="rounded-2xl bg-cream p-6 lg:sticky lg:top-24">
+        <h2 className="text-xl font-bold">Ringkasan Belanja</h2>
+        <div className="mt-5 flex justify-between text-sm"><span>Subtotal</span><span>{formatRupiah(total)}</span></div>
+        <div className="mt-3 flex justify-between text-sm"><span>Ongkir</span><span>Dihitung saat checkout</span></div>
+        <div className="my-5 border-t border-blush" />
+        <div className="flex justify-between text-lg font-extrabold"><span>Total</span><span className="text-primary">{formatRupiah(total)}</span></div>
+        <Link to="/checkout" className="focus-ring mt-6 block rounded-full bg-primary py-3.5 text-center font-bold text-white hover:bg-[#d97985]">Lanjut ke Checkout</Link>
+        <Link to="/products" className="focus-ring mt-3 block rounded-full py-3 text-center text-sm font-bold text-ink/60 hover:text-primary">Lanjut belanja</Link>
+      </aside>
+    </div>
+  </div>
+}
