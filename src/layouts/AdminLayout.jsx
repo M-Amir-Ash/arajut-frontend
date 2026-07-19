@@ -1,2 +1,83 @@
-import {useState} from 'react';import {NavLink,Outlet,useNavigate} from 'react-router-dom';import {useAuth} from '../context/AuthContext';import logo from '../../1ecdc0d8-f4a4-4e5e-98a7-55aab2264142.png'
-export default function AdminLayout(){const [open,setOpen]=useState(false);const {adminLogout}=useAuth();const nav=useNavigate();const links=[['/admin','Dashboard'],['/admin/products','Produk'],['/admin/categories','Kategori'],['/admin/site-settings','Konten Website']];return <div className="min-h-screen bg-cream text-ink lg:flex"><aside className={`${open?'block':'hidden'} fixed inset-0 z-50 w-72 bg-white p-6 shadow-xl lg:static lg:block lg:min-h-screen lg:shadow-none`}><div className="flex items-center gap-3"><img src={logo} className="h-12 w-12 rounded-full" alt="Logo Arajut"/><strong className="font-serif text-2xl text-primary">Arajut Admin</strong></div><nav className="mt-8 space-y-2">{links.map(([to,label])=><NavLink end={to==='/admin'} onClick={()=>setOpen(false)} key={to} to={to} className={({isActive})=>`block rounded-xl px-4 py-3 font-semibold ${isActive?'bg-blush text-primary':'hover:bg-cream'}`}>{label}</NavLink>)}<NavLink to="/" className="block rounded-xl px-4 py-3 font-semibold hover:bg-cream">Lihat Store ↗</NavLink></nav><button onClick={()=>{adminLogout();nav('/admin/login')}} className="mt-8 w-full rounded-full border border-primary py-2 font-bold text-primary">Keluar</button></aside>{open&&<button aria-label="Tutup menu" className="fixed inset-0 z-40 bg-black/20 lg:hidden" onClick={()=>setOpen(false)}/>}<div className="min-w-0 flex-1"><header className="flex h-18 items-center justify-between border-b border-blush bg-white px-5 lg:px-8"><button onClick={()=>setOpen(true)} className="text-2xl lg:hidden">☰</button><p className="font-bold">Panel Pengelolaan</p><span className="rounded-full bg-blush px-3 py-1 text-sm">Admin</span></header><main className="p-5 lg:p-8"><Outlet/></main></div></div>}
+import { useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import logo from "../../1ecdc0d8-f4a4-4e5e-98a7-55aab2264142.png";
+export default function AdminLayout() {
+  const [open, setOpen] = useState(false);
+  const { adminLogout } = useAuth();
+  const nav = useNavigate();
+  const links = [
+    ["/admin", "Dashboard"],
+    ["/admin/products", "Produk"],
+    ["/admin/categories", "Kategori"],
+    ["/admin/orders", "Pesanan & Pembayaran"],
+    ["/admin/site-settings", "Konten Website"],
+  ];
+  return (
+    <div className="min-h-screen bg-cream text-ink lg:flex">
+      <aside
+        className={`${open ? "block" : "hidden"} fixed inset-0 z-50 w-72 bg-white p-6 shadow-xl lg:static lg:block lg:min-h-screen lg:shadow-none`}
+      >
+        <div className="flex items-center gap-3">
+          <img
+            src={logo}
+            className="h-12 w-12 rounded-full"
+            alt="Logo Arajut"
+          />
+          <strong className="font-serif text-2xl text-primary">
+            Arajut Admin
+          </strong>
+        </div>
+        <nav className="mt-8 space-y-2">
+          {links.map(([to, label]) => (
+            <NavLink
+              end={to === "/admin"}
+              onClick={() => setOpen(false)}
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `block rounded-xl px-4 py-3 font-semibold ${isActive ? "bg-blush text-primary" : "hover:bg-cream"}`
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+          <NavLink
+            to="/"
+            className="block rounded-xl px-4 py-3 font-semibold hover:bg-cream"
+          >
+            Lihat Store ↗
+          </NavLink>
+        </nav>
+        <button
+          onClick={() => {
+            adminLogout();
+            nav("/admin/login");
+          }}
+          className="mt-8 w-full rounded-full border border-primary py-2 font-bold text-primary"
+        >
+          Keluar
+        </button>
+      </aside>
+      {open && (
+        <button
+          aria-label="Tutup menu"
+          className="fixed inset-0 z-40 bg-black/20 lg:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <header className="flex h-18 items-center justify-between border-b border-blush bg-white px-5 lg:px-8">
+          <button onClick={() => setOpen(true)} className="text-2xl lg:hidden">
+            ☰
+          </button>
+          <p className="font-bold">Panel Pengelolaan</p>
+          <span className="rounded-full bg-blush px-3 py-1 text-sm">Admin</span>
+        </header>
+        <main className="p-5 lg:p-8">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
