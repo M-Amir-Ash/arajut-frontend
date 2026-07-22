@@ -83,10 +83,29 @@ export default function Account() {
       return
     }
     setLocating(true)
-    navigator.geolocation.getCurrentPosition(position => {
-      setAddress(current => ({...current, latitude: position.coords.latitude, longitude: position.coords.longitude}))
-      setLocating(false)
-      setMessage('Koordinat lokasi berhasil dideteksi. Lengkapi detail alamat sebelum menyimpan.')
+    navigator.geolocation.getCurrentPosition(async position => {
+      const latitude = position.coords.latitude
+      const longitude = position.coords.longitude
+      setAddress(current => ({...current, latitude, longitude}))
+      try {
+        const response = await apiRequest(`/geocode/reverse?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`)
+        const detected = response.data
+        setAddress(current => ({
+          ...current,
+          latitude,
+          longitude,
+          address_line: detected.address_line || current.address_line,
+          province: detected.province || current.province,
+          city: detected.city || current.city,
+          district: detected.district || current.district,
+          postal_code: detected.postal_code || current.postal_code,
+        }))
+        setMessage('Lokasi berhasil dideteksi dan detail alamat telah diisi otomatis. Periksa kembali sebelum menyimpan.')
+      } catch (requestError) {
+        setError(`${requestError.message} Koordinat sudah tersimpan; lengkapi alamat secara manual.`)
+      } finally {
+        setLocating(false)
+      }
     }, () => {
       setLocating(false)
       setError('Lokasi tidak dapat dideteksi. Izinkan akses lokasi di browser.')
