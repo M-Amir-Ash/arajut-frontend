@@ -24,6 +24,7 @@ export default function Account() {
   const [address, setAddress] = useState({...blankAddress, recipient_name: user.name, phone: user.phone || ''})
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [addressError, setAddressError] = useState('')
   const [locating, setLocating] = useState(false)
   const navigate = useNavigate()
 
@@ -63,6 +64,17 @@ export default function Account() {
   const saveAddress = async event => {
     event.preventDefault()
     clearNotice()
+    setAddressError('')
+    const requiredFields = [
+      ['label', 'label alamat'], ['recipient_name', 'nama penerima'], ['phone', 'nomor telepon'],
+      ['postal_code', 'kode pos'], ['province', 'provinsi'], ['city', 'kota/kabupaten'],
+      ['district', 'kecamatan'], ['address_line', 'alamat lengkap'],
+    ]
+    const missing = requiredFields.filter(([key]) => !String(address[key] || '').trim()).map(([, label]) => label)
+    if (missing.length) {
+      setAddressError(`Lengkapi ${missing.join(', ')} sebelum menyimpan alamat.`)
+      return
+    }
     try {
       await apiRequest(`/addresses${address.id ? `/${address.id}` : ''}`, {
         method: address.id ? 'PUT' : 'POST',
@@ -72,12 +84,14 @@ export default function Account() {
       await loadAddresses()
       setMessage('Alamat pengiriman berhasil disimpan.')
     } catch (requestError) {
-      setError(requestError.message)
+      const validationMessages = requestError.errors ? Object.values(requestError.errors).flat().join(' ') : ''
+      setAddressError(validationMessages || requestError.message)
     }
   }
 
   const detectLocation = () => {
     clearNotice()
+    setAddressError('')
     if (!navigator.geolocation) {
       setError('Browser tidak mendukung deteksi lokasi.')
       return
@@ -116,6 +130,7 @@ export default function Account() {
     setAddress(selected)
     setActiveTab('addresses')
     clearNotice()
+    setAddressError('')
     window.scrollTo({top: 0, behavior: 'smooth'})
   }
 
@@ -179,9 +194,10 @@ export default function Account() {
         </div>}
 
         {activeTab === 'addresses' && <div className="grid gap-7 xl:grid-cols-[0.9fr_1.1fr]">
-          <form onSubmit={saveAddress} className="rounded-3xl border border-blush p-5 sm:p-7">
+          <form onSubmit={saveAddress} noValidate className="rounded-3xl border border-blush p-5 sm:p-7">
             <h2 className="text-2xl font-extrabold">{address.id ? 'Edit alamat' : 'Tambah alamat'}</h2>
             <p className="mt-1 text-sm text-ink/50">Alamat lengkap membantu pengiriman lebih akurat.</p>
+            {addressError && <p role="alert" className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold leading-6 text-red-700">{addressError}</p>}
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <FormField label="Label alamat" required value={address.label} onChange={event => setAddress({...address, label: event.target.value})} />
               <FormField label="Nama penerima" required value={address.recipient_name} onChange={event => setAddress({...address, recipient_name: event.target.value})} />
