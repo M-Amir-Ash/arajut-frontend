@@ -21,6 +21,7 @@ import SiteSettings from "./pages/SiteSettings";
 import Orders from "./pages/Orders";
 import AdminOrders from "./pages/AdminOrders";
 import Payment from "./pages/Payment";
+import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./context/AuthContext";
 import { DataProvider } from "./context/DataContext";
 import {
@@ -31,6 +32,7 @@ import {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <DataProvider>
         <AuthProvider>
           <CartProvider>
