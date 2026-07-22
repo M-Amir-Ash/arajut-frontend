@@ -138,8 +138,8 @@ export default function Account() {
     if (!window.confirm('Hapus alamat ini?')) return
     clearNotice()
     try {
-      await apiRequest(`/addresses/${id}`, {method: 'DELETE'})
-      await loadAddresses()
+      const response = await apiRequest(`/addresses/${id}`, {method: 'DELETE'})
+      setAddresses(response.data || [])
       setMessage('Alamat berhasil dihapus.')
     } catch (requestError) {
       setError(requestError.message)
