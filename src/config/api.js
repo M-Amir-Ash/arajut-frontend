@@ -25,6 +25,9 @@ export async function apiRequest(path, options = {}) {
   if (!API_BASE_URL) throw new ApiError('Alamat API belum dikonfigurasi.')
 
   const token = localStorage.getItem('arajut-api-token') || sessionStorage.getItem('arajut-api-token')
+  const normalizedPath = path.replace(/^\//, '')
+  const method = (options.method || 'GET').toUpperCase()
+  const isPublicCacheableRequest = method === 'GET' && normalizedPath === 'storefront' && !token
   const headers = new Headers(options.headers)
   headers.set('Accept', 'application/json')
   if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json')
@@ -32,9 +35,9 @@ export async function apiRequest(path, options = {}) {
 
   let response
   try {
-    response = await fetch(`${API_BASE_URL}/${path.replace(/^\//, '')}`, {
+    response = await fetch(`${API_BASE_URL}/${normalizedPath}`, {
       credentials: 'include',
-      cache: options.method && options.method !== 'GET' ? 'default' : 'no-store',
+      cache: isPublicCacheableRequest ? 'default' : method === 'GET' ? 'no-store' : 'default',
       ...options,
       headers,
     })
