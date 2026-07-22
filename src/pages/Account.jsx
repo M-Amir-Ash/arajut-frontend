@@ -84,6 +84,10 @@ export default function Account() {
       await loadAddresses()
       setMessage('Alamat pengiriman berhasil disimpan.')
     } catch (requestError) {
+      if (requestError.status === 404) {
+        await loadAddresses()
+        setAddress({...blankAddress, recipient_name: user.name, phone: user.phone || ''})
+      }
       const validationMessages = requestError.errors ? Object.values(requestError.errors).flat().join(' ') : ''
       setAddressError(validationMessages || requestError.message)
     }
